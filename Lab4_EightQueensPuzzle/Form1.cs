@@ -24,7 +24,7 @@ namespace Lab4_EightQueensPuzzle
         }
 
         // Init brushes for cell color array
-        Brush[] cellColor = {Brushes.Black, Brushes.White};
+        Brush[] cellColor = {Brushes.White, Brushes.Black};
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -37,6 +37,9 @@ namespace Lab4_EightQueensPuzzle
             // Set size of cells
             int cellSize = boardSize / 8;
 
+            // Set border color and size
+            Pen blackPen = new Pen(Color.FromArgb(255, 0, 0, 0), 2);
+
             // Get graphics object
             Graphics g = e.Graphics;
 
@@ -45,8 +48,12 @@ namespace Lab4_EightQueensPuzzle
             {
                 for (int row = 0; row < 8; row ++)
                 {
-                    // Fill rectangles with alernating colors, with each cell 1/8th of the board's size
-                    g.FillRectangle(cellColor[(col + row) % 2], boardPosition + col * cellSize, boardPosition + row * cellSize, cellSize, cellSize);
+                    // Make rectangle with black border
+                    Rectangle rect = new Rectangle(boardPosition + col * cellSize, boardPosition + row * cellSize, cellSize, cellSize);
+                    g.DrawRectangle(blackPen, rect);
+
+                    // Fill rectangles with alernating colors (white and black)
+                    g.FillRectangle(cellColor[(col + row) % 2], rect);
                 }
             }
         }
