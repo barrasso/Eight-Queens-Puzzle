@@ -100,7 +100,6 @@ namespace Lab4_EightQueensPuzzle
                 // Draw Queen
                 g.DrawString("Q", drawFont, queen.queenColor, queen.queenCoords);
             }
-           
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -108,7 +107,17 @@ namespace Lab4_EightQueensPuzzle
             // Clear the queens array
             this.allQueens.Clear();
 
+            // Clear the unsafe arrays
+            this.unsafeColumns.Clear();
+            this.unsafeRows.Clear();
+
             label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
+
+            // For each board cell, set to safe again
+            foreach (BoardCell cell in this.allCells)
+            {
+                cell.isSafe = true;
+            }
 
             // Invalidate
             this.Invalidate();
