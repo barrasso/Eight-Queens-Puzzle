@@ -75,15 +75,6 @@ namespace Lab4_EightQueensPuzzle
             // Get graphics object
             Graphics g = e.Graphics;
 
-            for (int i = 0; i < this.allQueens.Count; i++ )
-            {
-                Queen currentQueen = this.allQueens[i];
-
-                Font drawFont = new Font("Arial", 30);
-
-                g.DrawString("Q", drawFont, new SolidBrush(Color.Green), 100, 50);
-            }
-
             // Nested loop to create chess board
             for (int col = 0; col < 8; col++)
             {
@@ -98,6 +89,15 @@ namespace Lab4_EightQueensPuzzle
                     // Fill rectangles with alernating colors (white and black)
                     g.FillRectangle(cellColor[(row + col) % 2], rect);
                 }
+            }
+
+            foreach (Queen queen in this.allQueens)
+            {
+                // Custom Font
+                Font drawFont = new Font("Arial", 30);
+
+                // Draw Queen
+                g.DrawString("Q", drawFont, queen.queenColor, queen.queenCoords);
             }
            
         }
