@@ -9,7 +9,7 @@ namespace Lab4_EightQueensPuzzle
 {
     public class BoardCell
     {
-        // Cell row and column
+        // Cell row and column and diaganol
         public int rowNumber;
         public int colNumber;
 

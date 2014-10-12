@@ -16,11 +16,14 @@ namespace Lab4_EightQueensPuzzle
         // Holds all the chess board cells 
         public List<BoardCell> allCells = new List<BoardCell>();
 
-        // Create array list to hold cell info
-        public ArrayList cellInfoArray = new ArrayList();
-
         // Create list to hold queens
         public List<Queen> allQueens = new List<Queen>();
+
+        // Unsafe rows
+        public List<int> unsafeRows = new List<int>();
+
+        // Unsafe columns
+        public List<int> unsafeColumns = new List<int>();
 
         // Init brushes for cell color array
         public Brush[] cellColor = {Brushes.White, Brushes.Black};
@@ -36,9 +39,6 @@ namespace Lab4_EightQueensPuzzle
 
         // Set size of cells
         public int cellSize = 50;
-
-        // Safe flag
-        public bool isSafe;
 
         public Form1()
         {
@@ -91,6 +91,7 @@ namespace Lab4_EightQueensPuzzle
                 }
             }
 
+            // Draw Queens
             foreach (Queen queen in this.allQueens)
             {
                 // Custom Font
@@ -117,7 +118,6 @@ namespace Lab4_EightQueensPuzzle
         {
             if(e.Button == MouseButtons.Left)
             {
-
                 foreach (BoardCell cell in this.allCells)
                 {
                     // mouse click coords
@@ -126,12 +126,29 @@ namespace Lab4_EightQueensPuzzle
                     // Figure out which cell was clicked
                     if ((mouseClick.X > cell.cellOrigin.X) && (mouseClick.X < cell.cellOrigin.X + 50) && (mouseClick.Y > cell.cellOrigin.Y) && (mouseClick.Y < cell.cellOrigin.Y + 50))
                     {
-                        // if cell is not safe
-                        if (cell.isSafe == false)
+                        // For each unsafe row and column list, if same row or col number, its not safe
+                        for (int i = 0; i < this.unsafeRows.Count; i++)
                         {
+                            if(cell.rowNumber == this.unsafeRows[i])
+                            {
+                                cell.isSafe = false;
+                            }
+                        }
+
+                        for (int i = 0; i < this.unsafeColumns.Count; i ++)
+                        {
+                            if(cell.colNumber == this.unsafeColumns[i])
+                            {
+                                cell.isSafe = false;
+                            }
+                        }
+
+                       // if cell is not safe
+                       if (cell.isSafe == false)
+                       {
                             // Beep
                             System.Media.SystemSounds.Beep.Play();
-                        }
+                       }
 
                         // check if the cell is safe
                         if (cell.isSafe)
@@ -145,6 +162,10 @@ namespace Lab4_EightQueensPuzzle
                                 // Mark not safe  and figure out how to mark row and column safe too
                                 cell.isSafe = false;
 
+                                // Add the unsafe row and columns values
+                                this.unsafeRows.Add(cell.rowNumber);
+                                this.unsafeColumns.Add(cell.colNumber);
+
                                 label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
                             }
 
@@ -156,6 +177,10 @@ namespace Lab4_EightQueensPuzzle
 
                                 // Make not safe
                                 cell.isSafe = false;
+
+                                // Add the unsafe row and columns values
+                                this.unsafeRows.Add(cell.rowNumber);
+                                this.unsafeColumns.Add(cell.colNumber);
 
                                 label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
                             }
