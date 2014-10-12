@@ -168,6 +168,13 @@ namespace Lab4_EightQueensPuzzle
                                 Queen newQueen = new Queen(Brushes.White, cell.cellOrigin);
                                 this.allQueens.Add(newQueen);
 
+                                // If there are 8 queens, display winning message
+                                if(this.allQueens.Count == 8)
+                                {
+                                    // Show winning messages
+                                    MessageBox.Show(@"You did it!");
+                                }
+
                                 // Mark not safe  and figure out how to mark row and column safe too
                                 cell.isSafe = false;
 
@@ -183,6 +190,13 @@ namespace Lab4_EightQueensPuzzle
                                 // Add a white queen to array
                                 Queen newQueen = new Queen(Brushes.Black, cell.cellOrigin);
                                 this.allQueens.Add(newQueen);
+
+                                // If there are 8 queens, display winning message
+                                if (this.allQueens.Count == 8)
+                                {
+                                    // Show winning messages
+                                    MessageBox.Show(@"You did it!");
+                                }
 
                                 // Make not safe
                                 cell.isSafe = false;
