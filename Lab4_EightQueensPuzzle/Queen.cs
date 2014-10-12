@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 using System.Threading.Tasks;
 
 namespace Lab4_EightQueensPuzzle
@@ -9,6 +10,17 @@ namespace Lab4_EightQueensPuzzle
     public class Queen
     {
         // Color flag
-        public bool isBlackQueen;
+        public Brush queenColor;
+
+        // Queen Position
+        public Point queenCoords;
+
+        public Queen(Brush color, Point queenPosition)
+        {
+            this.queenColor = color;
+
+            // set queen position to center to cell
+            this.queenCoords = queenPosition;
+        }
     }
 }

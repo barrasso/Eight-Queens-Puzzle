@@ -18,8 +18,12 @@ namespace Lab4_EightQueensPuzzle
 
         // Cell center coords
         public Point cellCenter;
-
+        
+        // Cell color
         public Brush cellColor;
+
+        // Default flag to true
+        public bool isSafe = true;
 
         // Default constructor
         public BoardCell(Rectangle cell, Brush color, int row,int column)

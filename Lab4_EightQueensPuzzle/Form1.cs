@@ -19,8 +19,8 @@ namespace Lab4_EightQueensPuzzle
         // Create array list to hold cell info
         public ArrayList cellInfoArray = new ArrayList();
 
-        // Create array list to hold queens
-        public ArrayList queenArray = new ArrayList();
+        // Create list to hold queens
+        public List<Queen> allQueens = new List<Queen>();
 
         // Init brushes for cell color array
         public Brush[] cellColor = {Brushes.White, Brushes.Black};
@@ -48,7 +48,7 @@ namespace Lab4_EightQueensPuzzle
             this.Text = @"Eight Queens by Mark Barrasso";
 
             // Set queen number label text
-            label1.Text = String.Format("You have {0} queens on the board", queenArray.Count);
+            label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
 
             // Nested loop to create chess board
             for (int col = 0; col < 8; col++)
@@ -62,7 +62,10 @@ namespace Lab4_EightQueensPuzzle
                     Rectangle cell = new Rectangle(boardPosition + col * cellSize, boardPosition + row * cellSize, cellSize, cellSize);
 
                     // Instantiate board cell
-                    BoardCell chessBoardCell = new BoardCell(cell, currentColor, row.col);
+                    BoardCell chessBoardCell = new BoardCell(cell, currentColor, row, col);
+
+                    // Add chess board cell to list
+                    this.allCells.Add(chessBoardCell);
                 }
             }
         }
@@ -72,6 +75,15 @@ namespace Lab4_EightQueensPuzzle
             // Get graphics object
             Graphics g = e.Graphics;
 
+            for (int i = 0; i < this.allQueens.Count; i++ )
+            {
+                Queen currentQueen = this.allQueens[i];
+
+                Font drawFont = new Font("Arial", 30);
+
+                g.DrawString("Q", drawFont, new SolidBrush(Color.Green), 100, 50);
+            }
+
             // Nested loop to create chess board
             for (int col = 0; col < 8; col++)
             {
@@ -80,24 +92,81 @@ namespace Lab4_EightQueensPuzzle
                     // Make rectangle with black border
                     Rectangle rect = new Rectangle(boardPosition + col * cellSize, boardPosition + row * cellSize, cellSize, cellSize);
 
-
-
                     // Make rectangle with black border
                     g.DrawRectangle(blackPen, rect);
 
                     // Fill rectangles with alernating colors (white and black)
-                    g.FillRectangle(brush.cellColor, rect);
+                    g.FillRectangle(cellColor[(row + col) % 2], rect);
                 }
             }
+           
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             // Clear the queens array
-            this.queenArray.Clear();
+            this.allQueens.Clear();
+
+            label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
 
             // Invalidate
             this.Invalidate();
+        }
+
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Left)
+            {
+
+                foreach (BoardCell cell in this.allCells)
+                {
+                    // mouse click coords
+                    Point mouseClick = new Point(e.X, e.Y);
+
+                    // Figure out which cell was clicked
+                    if ((mouseClick.X > cell.cellOrigin.X) && (mouseClick.X < cell.cellOrigin.X + 50) && (mouseClick.Y > cell.cellOrigin.Y) && (mouseClick.Y < cell.cellOrigin.Y + 50))
+                    {
+                        // if cell is not safe
+                        if (cell.isSafe == false)
+                        {
+                            // Beep
+                            System.Media.SystemSounds.Beep.Play();
+                        }
+
+                        // check if the cell is safe
+                        if (cell.isSafe)
+                        {
+                            if (cell.cellColor == Brushes.Black)
+                            {
+                                // Add a black queen to array 
+                                Queen newQueen = new Queen(Brushes.White, cell.cellOrigin);
+                                this.allQueens.Add(newQueen);
+
+                                // Mark not safe  and figure out how to mark row and column safe too
+                                cell.isSafe = false;
+
+                                label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
+                            }
+
+                            if ((cell.cellColor == Brushes.White))
+                            {
+                                // Add a white queen to array
+                                Queen newQueen = new Queen(Brushes.Black, cell.cellOrigin);
+                                this.allQueens.Add(newQueen);
+
+                                // Make not safe
+                                cell.isSafe = false;
+
+                                label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
+                            }
+                        }
+                    }
+                }
+
+                // Must invalidate
+                this.Invalidate();
+            }
+
         }
     }
 }
