@@ -31,6 +31,9 @@ namespace Lab4_EightQueensPuzzle
         // Set border color and size
         public Pen blackPen = new Pen(Color.FromArgb(255, 0, 0, 0), 2);
 
+        // Hint check bog flag
+        public bool isHintsChecked;
+
         // Set the board size (height and width)
         public int boardSize = 400;
 
@@ -72,10 +75,31 @@ namespace Lab4_EightQueensPuzzle
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+
+            foreach (BoardCell cell in this.allCells)
+            {
+                // For each unsafe row and column list, if same row or col number, its not safe
+                for (int i = 0; i < this.unsafeRows.Count; i++)
+                {
+                    if (cell.rowNumber == this.unsafeRows[i])
+                    {
+                        cell.isSafe = false;
+                    }
+                }
+
+                for (int i = 0; i < this.unsafeColumns.Count; i++)
+                {
+                    if (cell.colNumber == this.unsafeColumns[i])
+                    {
+                        cell.isSafe = false;
+                    }
+                }
+            }
+
             // Get graphics object
             Graphics g = e.Graphics;
 
-            // Nested loop to create chess board
+            // Nested loop to create chess board (Normal chess board)
             for (int col = 0; col < 8; col++)
             {
                 for (int row = 0; row < 8; row++)
@@ -88,6 +112,19 @@ namespace Lab4_EightQueensPuzzle
 
                     // Fill rectangles with alernating colors (white and black)
                     g.FillRectangle(cellColor[(row + col) % 2], rect);
+                }
+            }
+
+            // if the hint box is checked
+            if(isHintsChecked)
+            {
+                // Nested loop to create chess board (Hints chess board)
+                foreach (BoardCell cell in this.allCells)
+                {
+                    if(cell.isSafe == false)
+                    {
+                        g.FillRectangle(Brushes.Red, cell.cellOrigin.X,  cell.cellOrigin.Y, cellSize, cellSize);
+                    }
                 }
             }
 
@@ -215,6 +252,40 @@ namespace Lab4_EightQueensPuzzle
                 this.Invalidate();
             }
 
+            // If right click
+            if(e.Button == MouseButtons.Right)
+            {
+                //if (this.allQueens.Count != 0 && this.unsafeRows.Count !=0 && this.unsafeColumns.Count != 0)
+                //{ 
+                //    // Remove the last queen 
+                //    this.allQueens.RemoveAt(this.allQueens.Count - 1);
+                //    this.unsafeColumns.RemoveAt(this.unsafeColumns.Count - 1-);
+                //    this.unsafeRows.RemoveAt(this.unsafeRows.Count - 1);
+
+                //    // update text
+                //    label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
+                //}
+                // Must invalidate
+                this.Invalidate();
+            }
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            // if checked, set flag true
+            if(!isHintsChecked)
+            {
+                isHintsChecked = true;
+            }
+
+            // else unchecked, set flag false
+            else
+            {
+                isHintsChecked = false;
+            }
+
+            this.Invalidate();
         }
     }
 }
