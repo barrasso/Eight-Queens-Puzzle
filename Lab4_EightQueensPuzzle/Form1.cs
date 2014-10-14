@@ -75,6 +75,8 @@ namespace Lab4_EightQueensPuzzle
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            // Get graphics object
+            Graphics g = e.Graphics;
 
             foreach (BoardCell cell in this.allCells)
             {
@@ -93,11 +95,27 @@ namespace Lab4_EightQueensPuzzle
                     {
                         cell.isSafe = false;
                     }
+
+                }
+
+                // For each unsafe row and column list, if same row or col number, its not safe
+                for (int i = 0; i < this.unsafeRows.Count; i++)
+                {
+                    if (cell.rowNumber != this.unsafeRows[i])
+                    {
+                        cell.isSafe = true;
+                    }
+                }
+
+                for (int i = 0; i < this.unsafeColumns.Count; i++)
+                {
+                    if (cell.colNumber != this.unsafeColumns[i])
+                    {
+                        cell.isSafe = true;
+                    }
+
                 }
             }
-
-            // Get graphics object
-            Graphics g = e.Graphics;
 
             // Nested loop to create chess board (Normal chess board)
             for (int col = 0; col < 8; col++)
@@ -172,22 +190,6 @@ namespace Lab4_EightQueensPuzzle
                     // Figure out which cell was clicked
                     if ((mouseClick.X > cell.cellOrigin.X) && (mouseClick.X < cell.cellOrigin.X + 50) && (mouseClick.Y > cell.cellOrigin.Y) && (mouseClick.Y < cell.cellOrigin.Y + 50))
                     {
-                        // For each unsafe row and column list, if same row or col number, its not safe
-                        for (int i = 0; i < this.unsafeRows.Count; i++)
-                        {
-                            if(cell.rowNumber == this.unsafeRows[i])
-                            {
-                                cell.isSafe = false;
-                            }
-                        }
-
-                        for (int i = 0; i < this.unsafeColumns.Count; i ++)
-                        {
-                            if(cell.colNumber == this.unsafeColumns[i])
-                            {
-                                cell.isSafe = false;
-                            }
-                        }
 
                        // if cell is not safe
                        if (cell.isSafe == false)
@@ -213,11 +215,7 @@ namespace Lab4_EightQueensPuzzle
                                 }
 
                                 // Mark not safe  and figure out how to mark row and column safe too
-                                cell.isSafe = false;
-
-                                // Add the unsafe row and columns values
-                                this.unsafeRows.Add(cell.rowNumber);
-                                this.unsafeColumns.Add(cell.colNumber);
+                                this.markCellsUnsafe(cell);
 
                                 label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
                             }
@@ -236,11 +234,7 @@ namespace Lab4_EightQueensPuzzle
                                 }
 
                                 // Make not safe
-                                cell.isSafe = false;
-
-                                // Add the unsafe row and columns values
-                                this.unsafeRows.Add(cell.rowNumber);
-                                this.unsafeColumns.Add(cell.colNumber);
+                                this.markCellsUnsafe(cell);
 
                                 label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
                             }
@@ -255,22 +249,37 @@ namespace Lab4_EightQueensPuzzle
             // If right click
             if(e.Button == MouseButtons.Right)
             {
-                if (this.allQueens.Count != 0 && this.unsafeRows.Count !=0 && this.unsafeColumns.Count != 0)
-                { 
-                    // Remove the last queen 
-                    foreach (Queen currentQueen in this.allQueens)
-                    {
-                        if(this.findQueenByOrigin(currentQueen))
-                        {
-                            //remove queen
-                            this.allQueens.Remove(currentQueen);
+                // mouse click coords
+                Point mouseClick = new Point(e.X, e.Y);
 
-                            break;
+                foreach (BoardCell cell in this.allCells)
+                {
+                    if ((mouseClick.X > cell.cellOrigin.X) && (mouseClick.X < cell.cellOrigin.X + 50) && (mouseClick.Y > cell.cellOrigin.Y) && (mouseClick.Y < cell.cellOrigin.Y + 50))
+                    {
+
+                            // Remove the last queen 
+                            foreach (Queen currentQueen in this.allQueens)
+                            {
+                                // if queen is found
+                                if (cell.cellOrigin == currentQueen.queenCoords)
+                                {
+                                    //remove queen
+                                    this.allQueens.Remove(currentQueen);
+
+                                    // Set cells to be safe
+                                    this.markCellsSafe(cell);
+
+                                    Console.WriteLine("Unsafe rows count: {0} and Unsafe columns count: {1}", this.unsafeRows.Count, this.unsafeColumns.Count);
+
+                                    // break out if removed queen
+                                    break;
+                                }
+                            }
+
+                            // update text
+                            label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
                         }
-                    }
                     
-                    // update text
-                    label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
                 }
 
                 // Must invalidate
@@ -296,15 +305,28 @@ namespace Lab4_EightQueensPuzzle
             this.Invalidate();
         }
 
-        public bool findQueenByOrigin(Queen findQueen)
+        // method mark cells as unsafe
+        public void markCellsUnsafe (BoardCell current)
         {
             foreach (BoardCell cell in this.allCells)
             {
-                if (cell.cellOrigin == findQueen.queenCoords)
-                    return true;
+                if((current.cellOrigin.X == cell.cellOrigin.X) || (current.cellOrigin.Y == cell.cellOrigin.Y))
+                {
+                    cell.isSafe = false;
+                }
             }
+        }
 
-            return false;
+        // method to mark cells as safe
+        public void markCellsSafe (BoardCell current)
+        {
+            foreach (BoardCell cell in this.allCells)
+            {
+                if ((current.cellOrigin.X == cell.cellOrigin.X) || (current.cellOrigin.Y == cell.cellOrigin.Y))
+                {
+                    cell.isSafe = true;
+                }
+            }
         }
     }
 }
