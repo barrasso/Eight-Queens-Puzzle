@@ -94,6 +94,9 @@ namespace Lab4_EightQueensPuzzle
                 // Nested loop to create chess board (Hints chess board)
                 foreach (BoardCell cell in this.allCells)
                 {
+                    //check for queens
+                    this.checkForQueens(cell);
+
                     if(cell.isSafe == false)
                     {
                         g.FillRectangle(Brushes.Red, cell.cellOrigin.X,  cell.cellOrigin.Y, cellSize, cellSize);
@@ -215,11 +218,11 @@ namespace Lab4_EightQueensPuzzle
                                 // if queen is found
                                 if (cell.cellOrigin == currentQueen.queenCoords)
                                 {
-                                    //remove queen
-                                    this.allQueens.Remove(currentQueen);
-
                                     // Set cells to be safe
                                     this.markCellsSafe(cell);
+
+                                    //remove queen
+                                    this.allQueens.Remove(currentQueen);
 
                                     // break out if removed queen
                                     break;
@@ -267,13 +270,25 @@ namespace Lab4_EightQueensPuzzle
         }
 
         // method to mark cells as safe
-        public void markCellsSafe (BoardCell current)
+        public void markCellsSafe (BoardCell currentCell)
         {
             foreach (BoardCell cell in this.allCells)
             {
-                if ((current.cellOrigin.X == cell.cellOrigin.X) || (current.cellOrigin.Y == cell.cellOrigin.Y))
+                if ((currentCell.cellOrigin.X == cell.cellOrigin.X) || (currentCell.cellOrigin.Y == cell.cellOrigin.Y))
                 {
                     cell.isSafe = true;
+                }
+            }
+        }
+
+        // check board for queens
+        public void checkForQueens(BoardCell b)
+        {
+            foreach (Queen activeQueen in this.allQueens)
+            {
+                if((b.cellOrigin.X == activeQueen.queenCoords.X) || (b.cellOrigin.Y == activeQueen.queenCoords.Y))
+                {
+                    b.isSafe = false;
                 }
             }
         }

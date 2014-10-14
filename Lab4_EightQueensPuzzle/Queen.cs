@@ -17,6 +17,7 @@ namespace Lab4_EightQueensPuzzle
 
         public Queen(Brush color, Point queenPosition)
         {
+            // set color
             this.queenColor = color;
 
             // set queen position to center to cell
