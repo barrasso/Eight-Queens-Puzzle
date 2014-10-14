@@ -255,16 +255,24 @@ namespace Lab4_EightQueensPuzzle
             // If right click
             if(e.Button == MouseButtons.Right)
             {
-                //if (this.allQueens.Count != 0 && this.unsafeRows.Count !=0 && this.unsafeColumns.Count != 0)
-                //{ 
-                //    // Remove the last queen 
-                //    this.allQueens.RemoveAt(this.allQueens.Count - 1);
-                //    this.unsafeColumns.RemoveAt(this.unsafeColumns.Count - 1-);
-                //    this.unsafeRows.RemoveAt(this.unsafeRows.Count - 1);
+                if (this.allQueens.Count != 0 && this.unsafeRows.Count !=0 && this.unsafeColumns.Count != 0)
+                { 
+                    // Remove the last queen 
+                    foreach (Queen currentQueen in this.allQueens)
+                    {
+                        if(this.findQueenByOrigin(currentQueen))
+                        {
+                            //remove queen
+                            this.allQueens.Remove(currentQueen);
 
-                //    // update text
-                //    label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
-                //}
+                            break;
+                        }
+                    }
+                    
+                    // update text
+                    label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
+                }
+
                 // Must invalidate
                 this.Invalidate();
             }
@@ -286,6 +294,17 @@ namespace Lab4_EightQueensPuzzle
             }
 
             this.Invalidate();
+        }
+
+        public bool findQueenByOrigin(Queen findQueen)
+        {
+            foreach (BoardCell cell in this.allCells)
+            {
+                if (cell.cellOrigin == findQueen.queenCoords)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
