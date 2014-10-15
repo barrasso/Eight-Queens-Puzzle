@@ -25,7 +25,7 @@ namespace Lab4_EightQueensPuzzle
         // Set border color and size
         public Pen blackPen = new Pen(Color.FromArgb(255, 0, 0, 0), 2);
 
-        // Hint check bog flag
+        // Hint checkbox flag
         public bool isHintsChecked;
 
         // Set the board size (height and width)
@@ -99,6 +99,7 @@ namespace Lab4_EightQueensPuzzle
 
                     if(cell.isSafe == false)
                     {
+                        g.DrawRectangle(blackPen, cell.cellOrigin.X, cell.cellOrigin.Y, cellSize, cellSize);
                         g.FillRectangle(Brushes.Red, cell.cellOrigin.X,  cell.cellOrigin.Y, cellSize, cellSize);
                     }
                 }
@@ -108,7 +109,7 @@ namespace Lab4_EightQueensPuzzle
             foreach (Queen queen in this.allQueens)
             {
                 // Custom Font
-                Font drawFont = new Font("Arial", 30);
+                Font drawFont = new Font("Arial", 30, FontStyle.Bold);
 
                 // Draw Queen
                 g.DrawString("Q", drawFont, queen.queenColor, queen.queenCoords);
@@ -139,6 +140,9 @@ namespace Lab4_EightQueensPuzzle
             {
                 foreach (BoardCell cell in this.allCells)
                 {
+                    //check for queens
+                    this.checkForQueens(cell);
+
                     // mouse click coords
                     Point mouseClick = new Point(e.X, e.Y);
 
@@ -161,15 +165,15 @@ namespace Lab4_EightQueensPuzzle
                                 Queen newQueen = new Queen(Brushes.White, cell.cellOrigin);
                                 this.allQueens.Add(newQueen);
 
+                                //check for queens
+                                this.checkForQueens(cell);
+
                                 // If there are 8 queens, display winning message
                                 if(this.allQueens.Count == 8)
                                 {
                                     // Show winning messages
                                     MessageBox.Show(@"You did it!");
                                 }
-
-                                // Mark not safe  and figure out how to mark row and column safe too
-                                this.markCellsUnsafe(cell);
 
                                 // update label
                                 label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
@@ -181,15 +185,15 @@ namespace Lab4_EightQueensPuzzle
                                 Queen newQueen = new Queen(Brushes.Black, cell.cellOrigin);
                                 this.allQueens.Add(newQueen);
 
+                                //check for queens
+                                this.checkForQueens(cell);
+
                                 // If there are 8 queens, display winning message
                                 if (this.allQueens.Count == 8)
                                 {
                                     // Show winning messages
                                     MessageBox.Show(@"You did it!");
                                 }
-
-                                // Make not safe
-                                this.markCellsUnsafe(cell);
 
                                 // update label
                                 label1.Text = String.Format("You have {0} queens on the board", this.allQueens.Count);
@@ -221,7 +225,7 @@ namespace Lab4_EightQueensPuzzle
                                     // Set cells to be safe
                                     this.markCellsSafe(cell);
 
-                                    //remove queen
+                                    // remove queen
                                     this.allQueens.Remove(currentQueen);
 
                                     // break out if removed queen
@@ -257,27 +261,18 @@ namespace Lab4_EightQueensPuzzle
             this.Invalidate();
         }
 
-        // method mark cells as unsafe
-        public void markCellsUnsafe (BoardCell current)
-        {
-            foreach (BoardCell cell in this.allCells)
-            {
-                if((current.cellOrigin.X == cell.cellOrigin.X) || (current.cellOrigin.Y == cell.cellOrigin.Y))
-                {
-                    cell.isSafe = false;
-                }
-            }
-        }
-
         // method to mark cells as safe
         public void markCellsSafe (BoardCell currentCell)
         {
             foreach (BoardCell cell in this.allCells)
             {
-                if ((currentCell.cellOrigin.X == cell.cellOrigin.X) || (currentCell.cellOrigin.Y == cell.cellOrigin.Y))
-                {
-                    cell.isSafe = true;
-                }
+                // check rows and columns
+                if ((currentCell.cellOrigin.X == cell.cellOrigin.X) || (currentCell.cellOrigin.Y == cell.cellOrigin.Y)) cell.isSafe = true;
+
+                // check diagonals
+                int dy = Math.Abs(cell.cellOrigin.Y - currentCell.cellOrigin.Y);
+                int dx = Math.Abs(cell.cellOrigin.X - currentCell.cellOrigin.X);
+                if (dx == dy) cell.isSafe = true;
             }
         }
 
@@ -286,10 +281,13 @@ namespace Lab4_EightQueensPuzzle
         {
             foreach (Queen activeQueen in this.allQueens)
             {
-                if((b.cellOrigin.X == activeQueen.queenCoords.X) || (b.cellOrigin.Y == activeQueen.queenCoords.Y))
-                {
-                    b.isSafe = false;
-                }
+                // check rows and columns
+                if ((b.cellOrigin.X == activeQueen.queenCoords.X) || (b.cellOrigin.Y == activeQueen.queenCoords.Y)) b.isSafe = false;
+
+                // check diagonals
+                int dy = Math.Abs(activeQueen.queenCoords.Y - b.cellOrigin.Y);
+                int dx = Math.Abs(activeQueen.queenCoords.X - b.cellOrigin.X);
+                if (dx == dy) b.isSafe = false;
             }
         }
     }
