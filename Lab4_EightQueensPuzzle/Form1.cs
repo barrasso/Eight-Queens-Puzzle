@@ -112,7 +112,8 @@ namespace Lab4_EightQueensPuzzle
                 Font drawFont = new Font("Arial", 30, FontStyle.Bold);
 
                 // Draw Queen
-                g.DrawString("Q", drawFont, queen.queenColor, queen.queenCoords);
+                if (isHintsChecked) g.DrawString("Q", drawFont, Brushes.Black, queen.queenCoords);
+                if (!isHintsChecked) g.DrawString("Q", drawFont, queen.queenColor, queen.queenCoords);
             }
         }
 
